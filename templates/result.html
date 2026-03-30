@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Result — ChurnIQ</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">Churn<span>IQ</span></a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/predict" class="active">Predict</a></li>
+      <li><a href="/dashboard">Dashboard</a></li>
+    </ul>
+    <a href="/predict" class="btn-nav">New Prediction →</a>
+  </div>
+</nav>
+
+<!-- RESULT HERO -->
+<section class="result-section">
+  <div class="container">
+    <div class="result-card {{ risk_color }}">
+
+      <!-- Big verdict -->
+      <div class="verdict-area">
+        <div class="verdict-icon">
+          {% if result == "Churn" %}⚠️{% else %}✅{% endif %}
+        </div>
+        <div class="verdict-label {{ risk_color }}">{{ risk }}</div>
+        <h1 class="verdict-title">
+          {% if result == "Churn" %}
+            This customer is <span class="grad-text-danger">likely to churn</span>
+          {% else %}
+            This customer is <span class="grad-text-success">likely to stay</span>
+          {% endif %}
+        </h1>
+      </div>
+
+      <!-- Probability gauges -->
+      <div class="prob-row">
+        <div class="prob-box churn-box">
+          <div class="prob-num" data-target="{{ churn_prob }}">0%</div>
+          <div class="prob-lbl">Churn Probability</div>
+          <div class="prob-bar-wrap">
+            <div class="prob-bar churn-bar" data-width="{{ churn_prob }}"></div>
+          </div>
+        </div>
+        <div class="prob-box retain-box">
+          <div class="prob-num retain-num" data-target="{{ no_churn_prob }}">0%</div>
+          <div class="prob-lbl">Retention Probability</div>
+          <div class="prob-bar-wrap">
+            <div class="prob-bar retain-bar" data-width="{{ no_churn_prob }}"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Circular gauge -->
+      <div class="gauge-wrap">
+        <svg class="gauge-svg" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background arc -->
+          <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="14" stroke-linecap="round"/>
+          <!-- Foreground arc -->
+          <path id="gaugeArc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none"
+            stroke="{% if risk_color == 'danger' %}#ff4d4d{% elif risk_color == 'warning' %}#f59e0b{% else %}#22c55e{% endif %}"
+            stroke-width="14" stroke-linecap="round"
+            stroke-dasharray="251" stroke-dashoffset="251"
+            style="transition: stroke-dashoffset 1.5s ease;"/>
+          <text x="100" y="95" text-anchor="middle" fill="white" font-size="26" font-weight="700" id="gaugeText">0%</text>
+          <text x="100" y="114" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="9">Churn Probability</text>
+        </svg>
+      </div>
+
+    </div>
+
+    <!-- Input Summary -->
+    <div class="inputs-summary">
+      <h2>Customer Profile Summary</h2>
+      <div class="inputs-grid">
+        {% for key, val in inputs.items() %}
+        <div class="input-chip">
+          <span class="chip-key">{{ key }}</span>
+          <span class="chip-val">{{ val }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="reco-card">
+      <h2>
+        {% if result == "Churn" %}🚨 Recommended Actions{% else %}💡 Retention Tips{% endif %}
+      </h2>
+      {% if result == "Churn" %}
+      <ul class="reco-list">
+        <li>📧 Send a personalised win-back email with exclusive discount</li>
+        <li>📞 Assign a dedicated customer success manager</li>
+        <li>🎁 Offer loyalty points or free delivery for next 3 orders</li>
+        <li>📋 Trigger NPS survey to understand root cause</li>
+        <li>⚡ Proactively address any open support tickets</li>
+      </ul>
+      {% else %}
+      <ul class="reco-list">
+        <li>🌟 Enrol in loyalty rewards programme</li>
+        <li>🎯 Send personalised product recommendations</li>
+        <li>📱 Push app engagement notifications</li>
+        <li>💳 Offer upgrade to premium membership</li>
+        <li>🔔 Set up re-engagement trigger if inactive for 30+ days</li>
+      </ul>
+      {% endif %}
+    </div>
+
+    <!-- Actions -->
+    <div class="result-actions">
+      <a href="/predict" class="btn-primary">← New Prediction</a>
+      <a href="/dashboard" class="btn-ghost">View Dashboard</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="nav-logo">Churn<span>IQ</span></div>
+    <p>E-Commerce Customer Churn Prediction · Built with Python, Scikit-learn & Flask</p>
+  </div>
+</footer>
+
+<script>
+// Animate gauge
+const churnProb = {{ churn_prob }};
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    const arc = document.getElementById("gaugeArc");
+    const txt = document.getElementById("gaugeText");
+    const totalLength = 251;
+    const offset = totalLength * (1 - churnProb / 100);
+    arc.style.strokeDashoffset = offset;
+
+    // Count up text
+    let start = 0;
+    const timer = setInterval(() => {
+      start += 1;
+      txt.textContent = start + "%";
+      if (start >= Math.round(churnProb)) clearInterval(timer);
+    }, 1500 / Math.round(churnProb));
+  }, 300);
+});
+</script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

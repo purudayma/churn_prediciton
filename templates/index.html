@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ChurnIQ — E-Commerce Churn Prediction</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">Churn<span>IQ</span></a>
+    <ul class="nav-links">
+      <li><a href="/" class="active">Home</a></li>
+      <li><a href="/predict">Predict</a></li>
+      <li><a href="/dashboard">Dashboard</a></li>
+    </ul>
+    <a href="/predict" class="btn-nav">Try Prediction →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">🤖 ML-Powered · {{ stats.best_model }}</div>
+    <h1 class="hero-title">
+      Predict Customer<br/>
+      <span class="grad-text">Churn Before</span><br/>
+      It Happens
+    </h1>
+    <p class="hero-sub">
+      An AI-powered platform trained on <strong>{{ "{:,}".format(stats.total_customers) }} customers</strong>
+      to identify who's about to leave — so you can act first.
+    </p>
+    <div class="hero-btns">
+      <a href="/predict" class="btn-primary">Start Prediction</a>
+      <a href="/dashboard" class="btn-ghost">View Dashboard</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat">
+        <span class="hstat-val">{{ (stats.churn_rate * 100)|round(1) }}%</span>
+        <span class="hstat-lbl">Churn Rate</span>
+      </div>
+      <div class="hstat-div"></div>
+      <div class="hstat">
+        <span class="hstat-val">{{ (stats.model_accuracy * 100)|round(1) }}%</span>
+        <span class="hstat-lbl">Model Accuracy</span>
+      </div>
+      <div class="hstat-div"></div>
+      <div class="hstat">
+        <span class="hstat-val">{{ "{:,}".format(stats.total_customers) }}</span>
+        <span class="hstat-lbl">Training Records</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="float-card fc1">
+      <div class="fc-icon">⚠️</div>
+      <div>
+        <div class="fc-title">High Risk</div>
+        <div class="fc-sub">73% churn probability</div>
+      </div>
+    </div>
+    <div class="float-card fc2">
+      <div class="fc-icon">✅</div>
+      <div>
+        <div class="fc-title">Retained</div>
+        <div class="fc-sub">12% churn probability</div>
+      </div>
+    </div>
+    <div class="float-card fc3">
+      <div class="fc-icon">📊</div>
+      <div>
+        <div class="fc-title">Model Accuracy</div>
+        <div class="fc-sub">{{ (stats.model_accuracy * 100)|round(1) }}% on test data</div>
+      </div>
+    </div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="container">
+    <div class="section-tag">What ChurnIQ Does</div>
+    <h2 class="section-title">Everything you need to<br/>reduce churn intelligently</h2>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🎯</div>
+        <h3>Accurate Predictions</h3>
+        <p>{{ stats.best_model }} trained on real behavioural patterns delivers {{ (stats.model_accuracy * 100)|round(1) }}% accuracy on unseen data.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <h3>Instant Results</h3>
+        <p>Get churn probability in milliseconds. No waiting, no batch jobs — real-time inference for every customer.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🧩</div>
+        <h3>17 Rich Features</h3>
+        <p>From satisfaction scores to return rates — the model analyses every behavioural signal that predicts churn.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📈</div>
+        <h3>Live Dashboard</h3>
+        <p>Explore churn by location, payment method, gender, and more. Visual insights backed by {{ "{:,}".format(stats.total_customers) }} records.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="container">
+    <div class="section-tag">How It Works</div>
+    <h2 class="section-title">Three steps to clarity</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Enter Customer Data</h3>
+        <p>Fill in 14 customer attributes — demographics, behaviour, and engagement metrics.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>AI Analyses Patterns</h3>
+        <p>The {{ stats.best_model }} model evaluates over 17 features including derived signals.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Get Risk Score</h3>
+        <p>Receive a precise churn probability and risk classification — High, Medium, or Low.</p>
+      </div>
+    </div>
+    <div class="cta-center">
+      <a href="/predict" class="btn-primary">Make a Prediction Now →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="nav-logo">Churn<span>IQ</span></div>
+    <p>E-Commerce Customer Churn Prediction · Built with Python, Scikit-learn & Flask</p>
+    <p style="opacity:.4;font-size:.8rem;margin-top:.4rem;">Model: {{ stats.best_model }} · Accuracy: {{ (stats.model_accuracy * 100)|round(1) }}%</p>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
